@@ -26,6 +26,13 @@ pipeline {
                    }
             
             }
-        }
+        }    
+        stage('deploying the container'){
+            steps{
+              sshagent(['ec2-user-docker']) {
+               sh "ssh -o StrictHostKeyChecking=no ec2-user@172.31.6.193 'ls -al'"
+              }
+            }
+        }    
     }   
 }
