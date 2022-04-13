@@ -1,6 +1,6 @@
 pipeline {
     agent any
-
+   
     stages {
         stage('Git Cloning') {
             steps {
@@ -29,10 +29,15 @@ pipeline {
         }    
         stage('deploying the container'){
             steps{
-              sshagent(['ec2-user-docker']) {
-               sh "ssh -o StrictHostKeyChecking=no ec2-user@172.31.6.193 'ls -al'"
+             sshagent(['dockerhostlogin']) {
+               sh "ssh -o StrictHostKeyChecking=no ec2-user@172.31.81.219 ${dockercommand()}"
               }
             }
         }    
     }   
+}
+
+def dockercommand(){
+    def dockerrun='docker run -dit --name picturious -p 80:80 hameed1983/docker-dep.29:latest'
+    return dockerrun
 }
