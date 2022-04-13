@@ -30,6 +30,8 @@ pipeline {
         stage('deploying the container'){
             steps{
              sshagent(['dockerhostlogin']) {
+               sh "ssh -o StrictHostKeyChecking=no ec2-user@172.31.81.219 ${dockerremove()}"
+               sh "ssh -o StrictHostKeyChecking=no ec2-user@172.31.81.219 ${dockerimagerm()}"
                sh "ssh -o StrictHostKeyChecking=no ec2-user@172.31.81.219 ${dockercommand()}"
               }
             }
@@ -37,7 +39,17 @@ pipeline {
     }   
 }
 
+def dockerremove(){
+    def dockerrm='docker rm -f picturious'
+    return dockerrm
+}
+
 def dockercommand(){
     def dockerrun='docker run -dit --name picturious -p 80:80 hameed1983/docker-dep.29:latest'
     return dockerrun
+}
+
+def dockerimagerm(){
+    def dockerrmi='docker rmi hameed1983/docker-dep.29:latest'
+    return dockerrmi
 }
